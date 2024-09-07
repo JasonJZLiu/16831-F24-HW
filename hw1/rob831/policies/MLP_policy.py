@@ -80,8 +80,9 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         else:
             observation = obs[None]
 
-        # TODO return the action that the policy prescribes
-        raise NotImplementedError
+        action_dist = self.forward(ptu.from_numpy(observation))
+        action = ptu.to_numpy(action_dist.sample())
+        return action
 
     # update/train this policy
     def update(self, observations, actions, **kwargs):
@@ -93,7 +94,13 @@ class MLPPolicy(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
     # return more flexible objects, such as a
     # `torch.distributions.Distribution` object. It's up to you!
     def forward(self, observation: torch.FloatTensor) -> Any:
-        raise NotImplementedError
+        # raise NotImplementedError
+        if self.discrete:
+            return distributions.Categorical(self.logits_na(observation))
+        else:
+            mean = self.mean_net(observation)
+            std = torch.exp(self.logstd).expand_as(mean)
+            return distributions.Normal(mean, std)
 
 
 #####################################################
@@ -104,12 +111,25 @@ class MLPPolicySL(MLPPolicy):
         super().__init__(ac_dim, ob_dim, n_layers, size, **kwargs)
         self.loss = nn.MSELoss()
 
-    def update(
-            self, observations, actions,
-            adv_n=None, acs_labels_na=None, qvals=None
-    ):
+    def update(self, observations, actions, adv_n=None, acs_labels_na=None, qvals=None):
         # TODO: update the policy and return the loss
-        loss = TODO
+
+        obs = ptu.from_numpy(observations)
+        actions_dist = self.forward(obs)
+        actions_gt = ptu.from_numpy(actions)
+
+        if self.discrete:
+            log_prob = actions_dist.log_prob(actions_gt)
+            # NLL Loss
+            loss = -log_prob.mean()
+        else:
+            # rsample to use reparametrization trick to enable differentiability
+            actions = actions_dist.rsample()
+            loss = self.loss(actions, actions_gt)
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
 
         return {
             # You can add extra logging information here, but keep this line

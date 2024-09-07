@@ -40,6 +40,8 @@ class BC_Trainer(object):
 
     def run_training_loop(self):
 
+        print(self.params['expert_data'])
+
         self.rl_trainer.run_training_loop(
             n_iter=self.params['n_iter'],
             initial_expertdata=self.params['expert_data'],

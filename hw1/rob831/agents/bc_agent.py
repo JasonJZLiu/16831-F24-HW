@@ -31,6 +31,7 @@ class BCAgent(BaseAgent):
         return log
 
     def add_to_replay_buffer(self, paths):
+        # replay_buffer is a numpy array containing a list of all steps
         self.replay_buffer.add_rollouts(paths)
 
     def sample(self, batch_size):
