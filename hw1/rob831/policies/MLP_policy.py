@@ -135,3 +135,4 @@ class MLPPolicySL(MLPPolicy):
             # You can add extra logging information here, but keep this line
             'Training Loss': ptu.to_numpy(loss),
         }
+    
