@@ -66,13 +66,13 @@ def main():
 
     parser.add_argument('--batch_size', type=int, default=1000)  # training data collected (in the env) during each iteration
     parser.add_argument('--eval_batch_size', type=int,
-                        default=1000)  # eval data collected (in the env) for logging metrics
+                        default=5000)  # eval data collected (in the env) for logging metrics
     parser.add_argument('--train_batch_size', type=int,
-                        default=100)  # number of sampled data points to be used per gradient/train step
+                        default=300)  # number of sampled data points to be used per gradient/train step
 
-    parser.add_argument('--n_layers', type=int, default=2)  # depth, of policy to be learned
-    parser.add_argument('--size', type=int, default=64)  # width of each layer, of policy to be learned
-    parser.add_argument('--learning_rate', '-lr', type=float, default=5e-3)  # LR for supervised learning
+    parser.add_argument('--n_layers', type=int, default=3)  # depth, of policy to be learned
+    parser.add_argument('--size', type=int, default=128)  # width of each layer, of policy to be learned
+    parser.add_argument('--learning_rate', '-lr', type=float, default=10e-3)  # LR for supervised learning
 
     parser.add_argument('--video_log_freq', type=int, default=5)
     parser.add_argument('--scalar_log_freq', type=int, default=1)

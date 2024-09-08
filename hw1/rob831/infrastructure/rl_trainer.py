@@ -133,7 +133,6 @@ class RL_Trainer(object):
 
             # log/save
             if self.log_video or self.log_metrics:
-
                 # perform logging
                 print('\nBeginning logging procedure...')
                 self.perform_logging(
@@ -186,11 +185,11 @@ class RL_Trainer(object):
         # collect more rollouts with the same policy, to be saved as videos in tensorboard
         # note: here, we collect MAX_NVIDEO rollouts, each of length MAX_VIDEO_LEN
         train_video_paths = None
+
         if self.log_video:
             print('\nCollecting train rollouts to be used for saving videos...')
             ## TODO look in utils and implement sample_n_trajectories
             train_video_paths = utils.sample_n_trajectories(self.env, collect_policy, MAX_NVIDEO, self.MAX_VIDEO_LEN, True)
-
 
         # paths is a list of dictionaries, where each dictionary contains obs, rew, act, next_obs, terminal, etc.
         # envsteps_this_batch is the number of envsteps in total contained in this batch
